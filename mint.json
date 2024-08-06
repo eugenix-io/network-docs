@@ -77,19 +77,18 @@
     {
       "group": "Endpoint Examples",
       "pages": [
-        "api-reference/endpoint/get",
+        {
+      "name": "api-reference/endpoint/get",
+      "url": "api-reference/endpoint/get",
+      "openapi": "api-reference/openapi.json"
+    }
+        ,
         "api-reference/endpoint/create",
         "api-reference/endpoint/delete"
       ]
     },
     {
-  "tabs": [
-    {
-      "name": "API Reference",
-      "url": "api-reference",
-      "openapi": "https://petstore3.swagger.io/api/v3/openapi.json"
-    }
-  ]
+
 }
 
   ],
