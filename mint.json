@@ -77,12 +77,7 @@
     {
       "group": "Endpoint Examples",
       "pages": [
-        {
-      "name": "api-reference/endpoint/get",
-      "url": "api-reference/endpoint/get",
-      "openapi": "api-reference/openapi.json"
-    }
-        ,
+        "api-reference/endpoint/get",
         "api-reference/endpoint/create",
         "api-reference/endpoint/delete"
       ]
