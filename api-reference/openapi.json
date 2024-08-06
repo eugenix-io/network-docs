@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "http://yourapi.com"
+      "url": "https://logx-inf-backend-vraqb64neq-uc.a.run.app"
     }
   ],
   "paths": {
@@ -19,15 +19,6 @@
         "summary": "Create a new order",
         "description": "Creates a new order in the trading system.",
         "parameters": [
-          {
-            "name": "Broker-Id",
-            "in": "header",
-            "description": "ID of the broker",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "Logx-Key",
             "in": "header",
@@ -113,15 +104,6 @@
         "summary": "Cancel a limit order",
         "description": "Cancels a limit order in the trading system.",
         "parameters": [
-          {
-            "name": "Broker-Id",
-            "in": "header",
-            "description": "ID of the broker",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "Logx-Key",
             "in": "header",
