@@ -15,9 +15,6 @@
       "to": "#07C983"
     }
   },
-  "openapi": {
-    "path": "/api-reference/openapi.yaml"
-  },
   "topbarLinks": [
     {
       "name": "Support",
@@ -94,5 +91,17 @@
     "x": "https://x.com/mintlify",
     "github": "https://github.com/mintlify",
     "linkedin": "https://www.linkedin.com/company/mintsearch"
+  },
+  "openapi": {
+  "navigation": {
+    "type": "tag",
+    "tags": [
+      {
+        "name": "users",
+        "group": "API Documentation"
+      }
+    ]
   }
+}
+
 }
