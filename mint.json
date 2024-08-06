@@ -81,7 +81,17 @@
         "api-reference/endpoint/create",
         "api-reference/endpoint/delete"
       ]
+    },
+    {
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference",
+      "openapi": "https://petstore3.swagger.io/api/v3/openapi.json"
     }
+  ]
+}
+
   ],
   "footerSocials": {
     "x": "https://x.com/mintlify",

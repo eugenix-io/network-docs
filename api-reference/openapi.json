@@ -1,95 +1,54 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "Order API",
-    "description": "API for managing orders in the trading system.",
-    "version": "1.0.0",
+    "title": "OpenAPI Plant Store",
+    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
     "license": {
       "name": "MIT"
-    }
+    },
+    "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "https://logx-inf-backend-vraqb64neq-uc.a.run.app"
+      "url": "http://sandbox.mintlify.com"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
     }
   ],
   "paths": {
-    "/order": {
-      "post": {
-        "summary": "Create a new order",
-        "description": "Creates a new order in the trading system.",
+    "/plants": {
+      "get": {
+        "description": "Returns all plants from the system that the user has access to",
         "parameters": [
           {
-            "name": "Logx-Key",
-            "in": "header",
-            "description": "API key for authentication",
-            "required": true,
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of results to return",
             "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Logx-Secret",
-            "in": "header",
-            "description": "API secret for authentication",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Logx-Signature",
-            "in": "header",
-            "description": "Signature for verifying the request",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "Logx-Signer-Address",
-            "in": "header",
-            "description": "Public key of the signer",
-            "required": true,
-            "schema": {
-              "type": "string"
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
-        "requestBody": {
-          "description": "Order details to create",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Order"
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
-            "description": "Order created successfully",
+            "description": "Plant response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Plant"
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "Invalid request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
+            "description": "Unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -100,44 +59,32 @@
           }
         }
       },
-      "delete": {
-        "summary": "Cancel a limit order",
-        "description": "Cancels a limit order in the trading system.",
-        "parameters": [
-          {
-            "name": "Logx-Key",
-            "in": "header",
-            "description": "API key for authentication",
-            "required": true,
-            "schema": {
-              "type": "string"
+      "post": {
+        "description": "Creates a new plant in the store",
+        "requestBody": {
+          "description": "Plant to add to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPlant"
+              }
             }
           },
-          {
-            "name": "Logx-Secret",
-            "in": "header",
-            "description": "API secret for authentication",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "orderId",
-            "in": "query",
-            "description": "ID of the order to cancel",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+          "required": true
+        },
         "responses": {
-          "204": {
-            "description": "Order canceled successfully"
+          "200": {
+            "description": "plant response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Plant"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Invalid request",
+            "description": "unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -145,9 +92,32 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/plants/{id}": {
+      "delete": {
+        "description": "Deletes a single plant based on the ID supplied",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of plant to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Plant deleted",
+            "content": {}
           },
-          "401": {
-            "description": "Unauthorized",
+          "400": {
+            "description": "unexpected error",
             "content": {
               "application/json": {
                 "schema": {
@@ -162,62 +132,47 @@
   },
   "components": {
     "schemas": {
-      "Order": {
-        "type": "object",
+      "Plant": {
         "required": [
-          "marketId",
-          "isBuy",
-          "orderType",
-          "amount",
-          "price",
-          "expiryTs",
-          "isReduce"
+          "name"
         ],
+        "type": "object",
         "properties": {
-          "marketId": {
-            "type": "string",
-            "description": "Identifier for the market"
+          "name": {
+            "description": "The name of the plant",
+            "type": "string"
           },
-          "isBuy": {
-            "type": "boolean",
-            "description": "True if the order is a buy order"
-          },
-          "orderType": {
-            "type": "string",
-            "description": "Type of the order (e.g., limit, market)"
-          },
-          "amount": {
-            "type": "string",
-            "description": "Amount of the asset to trade"
-          },
-          "price": {
-            "type": "string",
-            "description": "Price of the asset"
-          },
-          "expiryTs": {
-            "type": "integer",
-            "description": "Expiration timestamp in milliseconds"
-          },
-          "isReduce": {
-            "type": "boolean",
-            "description": "True if the order is to reduce position"
+          "tag": {
+            "description": "Tag to specify the type",
+            "type": "string"
           }
         }
       },
-      "OrderResponse": {
-        "type": "object",
-        "properties": {
-          "orderId": {
-            "type": "string",
-            "description": "Unique identifier for the order"
+      "NewPlant": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Plant"
           },
-          "status": {
-            "type": "string",
-            "description": "Status of the order"
+          {
+            "required": [
+              "id"
+            ],
+            "type": "object",
+            "properties": {
+              "id": {
+                "description": "Identification number of the plant",
+                "type": "integer",
+                "format": "int64"
+              }
+            }
           }
-        }
+        ]
       },
       "Error": {
+        "required": [
+          "error",
+          "message"
+        ],
         "type": "object",
         "properties": {
           "error": {
@@ -228,6 +183,12 @@
             "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
       }
     }
   }

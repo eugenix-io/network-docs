@@ -1,33 +1,26 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Welcome to Logx Network API Documentation'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+# Introduction
 
-## Welcome
+Welcome to the Logx Network API documentation. This guide provides the information you need to effectively interact with the Logx Network API.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+## Base Endpoint
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+All requests to the Logx Network API are made to the following base endpoint:
+
+`https://logx-inf-backend-vraqb64neq-uc.a.run.app`
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+The Logx Network API uses different authentication methods depending on the endpoint. Here’s a breakdown of the authentication requirements:
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
-```
+- **API Key and Secret**: Some endpoints require authentication using `logx-key` and `logx-secret`. You can obtain these credentials by using the `/auth` API endpoint.
+
+- **Signature**: Some endpoints require a combination of `logx-key`, `logx-secret`, and a signature to verify the request.
+
+- **No Authentication**: Certain endpoints are publicly accessible and do not require any authentication.
+
+For detailed information on how to authenticate API requests, please refer to the [Authentication Documentation](#).
