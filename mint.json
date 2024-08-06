@@ -15,6 +15,9 @@
       "to": "#07C983"
     }
   },
+  "openapi": {
+    "path": "/api-reference/openapi.yaml"
+  },
   "topbarLinks": [
     {
       "name": "Support",
@@ -28,8 +31,7 @@
   "tabs": [
     {
       "name": "API Reference",
-      "url": "api-reference",
-      "openapi": "https://petstore3.swagger.io/api/v3/openapi.json"
+      "url": "api-reference"
     }
   ],
   "anchors": [
