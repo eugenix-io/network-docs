@@ -52,18 +52,45 @@
             "pages": [
                 "api-reference/introduction",
                 "api-reference/authentication",
-                "api-reference/endpoint/register-account",
-                "api-reference/endpoint/fetch-supported-markets",
-                "api-reference/endpoint/fetch-funding-rates",
-                "api-reference/endpoint/fetch-quotes",
-                "api-reference/endpoint/fetch-positions",
-                "api-reference/endpoint/fetch-orders",
-                "api-reference/endpoint/fetches-nonce",
-                "api-reference/endpoint/withdrawable-balance",
-                "api-reference/endpoint/user-data",
-                "api-reference/endpoint/create-order",
-                "api-reference/endpoint/delete-order",
-                "api-reference/endpoint/withdraw-token-balance"
+                {
+                    "group": "Registration",
+                    "pages": ["api-reference/endpoint/register-account"]
+                },
+                {
+                    "group": "Markets",
+                    "pages": [
+                        "api-reference/endpoint/fetch-supported-markets",
+                        "api-reference/endpoint/fetch-funding-rates",
+                        "api-reference/endpoint/fetch-quotes"
+                    ]
+                },
+                {
+                    "group": "Order Management",
+                    "pages": [
+                        "api-reference/endpoint/create-order",
+                        "api-reference/endpoint/delete-order",
+                        "api-reference/endpoint/fetch-orders"
+                    ]
+                },
+                {
+                    "group": "Positions",
+                    "pages": ["api-reference/endpoint/fetch-positions"]
+                },
+                {
+                    "group": "Withdraw",
+                    "pages": [
+                        "api-reference/endpoint/withdrawable-balance",
+                        "api-reference/endpoint/withdraw-token-balance"
+                    ]
+                },
+                {
+                    "group": "Nonce",
+                    "pages": ["api-reference/endpoint/fetches-nonce"]
+                },
+                {
+                    "group": "User data",
+                    "pages": ["api-reference/endpoint/user-data"]
+                }
             ]
         }
     ],

@@ -571,7 +571,7 @@ paths:
 
     /api/v1/user/withdrawableTokenBalance:
         get:
-            summary: Fetch withdrawable balance
+            summary: Fetch withdrawable balances
             operationId: withdrawableTokenBalance
             parameters:
                 - $ref: '#/components/parameters/Logx-Key'
