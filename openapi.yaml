@@ -1,0 +1,701 @@
+openapi: 3.0.3
+info:
+    title: Order API
+    version: 1.0.0
+    description: API for creating orders
+
+servers:
+    - url: https://testnet-api.logx.network
+      description: Gateway Server
+      variables: {}
+      x-google-endpoints:
+          - name: gateway-vraqb64neq-uc.a.run.app
+            allowCors: true
+      x-google-backend:
+          address: https://logx-inf-backend-vraqb64neq-uc.a.run.app
+          protocol: h2
+
+components:
+    parameters:
+        Broker-Id:
+            name: Broker-Id
+            in: header
+            description: Header for broker-id
+            required: true
+            schema:
+                type: string
+        Logx-Key:
+            name: Logx-Key
+            in: header
+            description: Header for Logx key
+            required: true
+            schema:
+                type: string
+        Logx-Secret:
+            name: Logx-Secret
+            in: header
+            description: Header for Logx secret
+            required: true
+            schema:
+                type: string
+    schemas:
+        OrderRequest:
+            type: object
+            properties:
+                marketId:
+                    type: integer
+                    example: 3
+                isBuy:
+                    type: boolean
+                    example: true
+                orderType:
+                    type: string
+                    example: 'MARKET'
+                amount:
+                    type: string
+                    example: '0.002094'
+                price:
+                    type: string
+                    example: '0'
+                expiryTs:
+                    type: integer
+                    example: 1725711776768
+                isReduce:
+                    type: boolean
+                    example: false
+        OrderResponse:
+            type: object
+            properties:
+                body:
+                    type: object
+                    properties:
+                        amountx18:
+                            type: string
+                            example: '2094000000000000'
+                        brokerId:
+                            type: integer
+                            example: 1
+                        createdAt:
+                            type: string
+                            format: date-time
+                            example: '2024-08-08T12:22:57.264915Z'
+                        expiryTs:
+                            type: integer
+                            example: 1725711776768
+                        id:
+                            type: integer
+                            example: 2418249
+                        marketSymbol:
+                            type: string
+                            example: 'BTC-USD'
+                        marketType:
+                            type: string
+                            example: 'PERPETUAL'
+                        pricex18:
+                            type: string
+                            example: '0'
+                        side:
+                            type: string
+                            example: 'BUY'
+                        status:
+                            type: string
+                            example: 'FILLED'
+                        subaccountId:
+                            type: string
+                            example: '1_0x4012AB6a68CD1B2Eb2d0B1DdcE846DBe5d0B4059_1'
+                        totalFilledx18:
+                            type: string
+                            example: '2094000000000000'
+                        type:
+                            type: string
+                            example: 'MARKET'
+                        updatedAt:
+                            type: string
+                            format: date-time
+                            example: '2024-08-08T12:22:57.440277977Z'
+                message:
+                    type: string
+                    example: 'Order created successfully'
+                status:
+                    type: integer
+                    example: 200
+        Order:
+            type: object
+            properties:
+                orderId:
+                    type: integer
+                    description: Unique identifier for the order
+                productID:
+                    type: integer
+                    description: Identifier for the product
+                amountx18:
+                    type: string
+                    description: Amount of the order in 18 decimal format
+                filledAmountx18:
+                    type: string
+                    description: Amount filled of the order in 18 decimal format
+                pricex18:
+                    type: string
+                    description: Price of the order in 18 decimal format
+                operation:
+                    type: string
+                    description: Type of operation (BUY/SELL)
+                orderType:
+                    type: string
+                    description: Type of order (LIMIT/MARKET)
+            required:
+                - orderId
+                - productID
+                - amountx18
+                - pricex18
+                - operation
+                - orderType
+            example:
+                orderId: 2407731
+                productID: 3
+                amountx18: '1742000000000000'
+                filledAmountx18: '0'
+                pricex18: '57400000000000000000000'
+                operation: 'BUY'
+                orderType: 'LIMIT'
+        FundingRate:
+            type: object
+            properties:
+                Symbol:
+                    type: string
+                Funding:
+                    type: object
+                    properties:
+                        fundingRate:
+                            type: integer
+                        cumulativeFundingRate:
+                            type: string
+        FundingRates:
+            type: object
+            properties:
+                rates:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/FundingRate'
+        Quote:
+            type: object
+            properties:
+                price:
+                    type: string
+                quantity:
+                    type: string
+        MarketQuote:
+            type: object
+            properties:
+                asks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Quote'
+                bids:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Quote'
+                timestamp:
+                    type: integer
+                marketId:
+                    type: integer
+        Quotes:
+            type: object
+            properties:
+                body:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/MarketQuote'
+                message:
+                    type: string
+                status:
+                    type: integer
+        Position:
+            type: object
+            properties:
+                InitialMarginFraction:
+                    type: string
+                MaintenanceMarginFraction:
+                    type: string
+                amount:
+                    type: string
+                lastFundingRate:
+                    type: string
+                productID:
+                    type: integer
+                vQuoteBalance:
+                    type: string
+        Trade:
+            type: object
+            properties:
+                amountx18:
+                    type: string
+                feex18:
+                    type: string
+                pnl:
+                    type: string
+                pricex18:
+                    type: string
+                productId:
+                    type: integer
+                timestamp:
+                    type: string
+                    format: date-time
+                type:
+                    type: string
+        Positions:
+            type: object
+            properties:
+                positions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Position'
+                tradeHistory:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Trade'
+        Orders:
+            type: object
+            properties:
+                orders:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Order'
+            example:
+                orders:
+                    - orderId: 2407731
+                      productID: 3
+                      amountx18: '1742000000000000'
+                      filledAmountx18: '0'
+                      pricex18: '57400000000000000000000'
+                      operation: 'BUY'
+                      orderType: 'LIMIT'
+        CompletedTasks:
+            type: object
+        IPValidation:
+            type: object
+        Statistics:
+            type: object
+        WithdrawableTokenBalance:
+            type: object
+            properties:
+                withdrawableBalance:
+                    type: object
+                    description: Object mapping product IDs to withdrawable token balances
+                    additionalProperties:
+                        type: string
+            example:
+                withdrawableBalance:
+                    '10': '79000000000000000000'
+                    '12': '20000000000000000000'
+                    '14': '20000000000000000000'
+                    '16': '60000000000000000000'
+                    '18': '80000000000000000000'
+                    '20': '60000000000000000000'
+                    '4': '63882684594552931376'
+                    '6': '60000000000000000000'
+                    '8': '92000000000000000000'
+        Balance:
+            type: object
+            properties:
+                productId:
+                    type: integer
+                tokenBalance:
+                    type: string
+                withdrawBalance:
+                    type: string
+        SpotBalance:
+            type: object
+            properties:
+                balances:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Balance'
+                freeBalance:
+                    type: string
+                usedBalance:
+                    type: string
+        SubAccountData:
+            type: object
+            properties:
+                spotBalance:
+                    $ref: '#/components/schemas/SpotBalance'
+        Market:
+            type: object
+            properties:
+                id:
+                    type: integer
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
+                deleted_at:
+                    type: string
+                    format: date-time
+                    nullable: true
+                Symbol:
+                    type: string
+                Type:
+                    type: string
+                    enum:
+                        - PERPETUAL
+                        - SPOT
+                AmtToQtmConversionExpo:
+                    type: integer
+                PriceToQtmConversionExpo:
+                    type: integer
+                MaxPositionValuex18:
+                    type: string
+                MinAmountx18:
+                    type: string
+                BaseAsset:
+                    type: string
+                QuoteAsset:
+                    type: string
+                IsActive:
+                    type: boolean
+                MakerFeeFractionx18:
+                    type: string
+                TakerFeeFractionx18:
+                    type: string
+                InitialMarginFractionx18:
+                    type: string
+                MaintenanceMarginFractionx18:
+                    type: string
+        MarketDetails:
+            type: object
+            properties:
+                body:
+                    type: object
+                    properties:
+                        markets:
+                            type: array
+                            items:
+                                $ref: '#/components/schemas/Market'
+                message:
+                    type: string
+                status:
+                    type: integer
+        ReferralDetails:
+            type: object
+        AppliedCode:
+            type: object
+        Nonce:
+            type: object
+            properties:
+                body:
+                    type: object
+                    properties:
+                        nonce:
+                            type: string
+                            example: '26'
+                message:
+                    type: string
+                    example: ''
+                status:
+                    type: integer
+                    example: 200
+        AuthRequest:
+            type: object
+            properties:
+                subaccountId:
+                    type: string
+                    example: '1_0x4012AB6a68CD1B2Eb2d0B1DdcE846DBe5d0B4059_1'
+                signingKey:
+                    type: string
+                    example: '0xc36502E297E92763a71d167BE335C3c741b011d7'
+                signingSignature:
+                    type: string
+                    example: '0xd9f975ac9d1322a83a681b17d6f19f74f5f4c336345abc6185ab15cf5054a4d947d0ec6949f1024e5d35ad2d28165a2844aec43c8f2c5bd9c89f6455d3dae83c1c'
+                ethAddress:
+                    type: string
+                    example: '0x4012AB6a68CD1B2Eb2d0B1DdcE846DBe5d0B4059'
+                ethSignature:
+                    type: string
+                    example: '0x9406f671d451a78bb7a910e6b271053384bac859a24a3584f34f215ba13aecf22621e8c470cb20e10a5beff787cbe5642cbda6ad0c5f5438d857a1d1261085881b'
+                expiryTs:
+                    type: integer
+                    example: 1723637411750
+                nonce:
+                    type: integer
+                    example: 26
+                chainId:
+                    type: integer
+                    example: 42161
+        AuthResponse:
+            type: object
+            properties:
+                body:
+                    type: object
+                    properties:
+                        logx_key:
+                            type: string
+                            example: 'ba87ca738f08414e867b94a7bc773a34'
+                        logx_secret:
+                            type: string
+                            example: '133029bce12e3139e8720a2d5a18ee849af6e6d315f266276c4ba0262cda1719'
+                message:
+                    type: string
+                    example: 'Subaccount successfully registered'
+                status:
+                    type: integer
+                    example: 200
+        CancelOrderResponse:
+            type: object
+            properties:
+                body:
+                    type: string
+                    nullable: true
+                    example: null
+                message:
+                    type: string
+                    example: 'Order cancelled successfully'
+                status:
+                    type: integer
+                    example: 200
+        WithdrawCollateralRequest:
+            type: object
+            properties:
+                subAccountId:
+                    type: string
+                    example: '1_0x4012AB6a68CD1B2Eb2d0B1DdcE846DBe5d0B4059_1'
+                sessionKey:
+                    type: string
+                    example: '0x040807530737h7E8D14Aa6c1dD18044bcAA97A62'
+                productId:
+                    type: integer
+                    example: 10
+                amount:
+                    type: string
+                    example: '1000000000000000000'
+                nonce:
+                    type: integer
+                    example: 28
+                destinationChainId:
+                    type: integer
+                    example: 421614
+                receiver:
+                    type: string
+                    example: '0x1020AB6a68CD1B2Eb890B1DdcE846DBe5d0B4059'
+                chainId:
+                    type: integer
+                    example: 9369
+        WithdrawCollateralResponse:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    example: true
+
+paths:
+    /api/v1/order:
+        post:
+            summary: Create a new order
+            operationId: createOrder
+            requestBody:
+                description: Order object that needs to be added
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OrderRequest'
+            responses:
+                '200':
+                    description: Order created successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/OrderResponse'
+
+    /api/v1/market/fundingrates:
+        get:
+            summary: Fetch funding rates
+            operationId: fetchFundingRate
+            responses:
+                '200':
+                    description: Fetched funding rates successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/FundingRates'
+
+    /api/v1/order/quotes:
+        get:
+            summary: Fetch quotes
+            operationId: fetchQuotes
+            parameters:
+                - $ref: '#/components/parameters/Logx-Key'
+                - $ref: '#/components/parameters/Logx-Secret'
+                - $ref: '#/components/parameters/Broker-Id'
+            responses:
+                '200':
+                    description: Fetched quotes successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Quotes'
+
+    /api/v1/user/positions:
+        get:
+            summary: Fetch positions and trade history
+            operationId: fetchPositions
+            parameters:
+                - $ref: '#/components/parameters/Logx-Key'
+                - $ref: '#/components/parameters/Logx-Secret'
+                - $ref: '#/components/parameters/Broker-Id'
+            responses:
+                '200':
+                    description: Fetched positions successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Positions'
+
+    /api/v1/user/orders:
+        get:
+            summary: Fetch orders
+            operationId: fetchOrders
+            parameters:
+                - $ref: '#/components/parameters/Logx-Key'
+                - $ref: '#/components/parameters/Logx-Secret'
+                - $ref: '#/components/parameters/Broker-Id'
+            responses:
+                '200':
+                    description: Fetched orders successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Orders'
+
+    /api/v1/user/withdrawableTokenBalance:
+        get:
+            summary: Fetch withdrawable balance
+            operationId: withdrawableTokenBalance
+            parameters:
+                - $ref: '#/components/parameters/Logx-Key'
+                - $ref: '#/components/parameters/Logx-Secret'
+                - $ref: '#/components/parameters/Broker-Id'
+            responses:
+                '200':
+                    description: Fetched withdrawable token balance successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WithdrawableTokenBalance'
+
+    /api/v1/token/withdrawCollateral:
+        post:
+            summary: Withdraw token balance
+            operationId: withdrawsTokenBalance
+            requestBody:
+                description: Withdraw collateral request body
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/WithdrawCollateralRequest'
+            responses:
+                '200':
+                    description: Withdrew token balance successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/WithdrawCollateralResponse'
+
+    /api/v1/user:
+        get:
+            summary: Fetch user data
+            operationId: getSubaccountData
+            parameters:
+                - $ref: '#/components/parameters/Logx-Key'
+                - $ref: '#/components/parameters/Logx-Secret'
+                - $ref: '#/components/parameters/Broker-Id'
+            responses:
+                '200':
+                    description: Fetched user data successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/SubAccountData'
+
+    /api/v1/market:
+        get:
+            summary: Get supported markets
+            operationId: getMarket
+            parameters:
+                - name: type
+                  in: query
+                  required: true
+                  schema:
+                      type: string
+                  description: Type will be either PERPETUAL/SPOT
+            responses:
+                '200':
+                    description: Fetched market details successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/MarketDetails'
+
+    /api/v1/order/{orderId}:
+        delete:
+            summary: Delete an order
+            operationId: deleteOrder
+            parameters:
+                - $ref: '#/components/parameters/Logx-Key'
+                - $ref: '#/components/parameters/Logx-Secret'
+                - $ref: '#/components/parameters/Broker-Id'
+                - name: orderId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: The ID of the order to delete
+            responses:
+                '200':
+                    description: Deleted order successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CancelOrderResponse'
+
+    /api/v1/auth:
+        post:
+            summary: Register account
+            parameters:
+                - $ref: '#/components/parameters/Broker-Id'
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AuthRequest'
+            responses:
+                '200':
+                    description: Successfully authenticated subaccount
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AuthResponse'
+
+    /api/v1/subaccount/nonce/{subAccountId}:
+        get:
+            summary: Fetches nonce
+            operationId: fetchNonce
+            parameters:
+                - name: subAccountId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                  description: SubAccount ID for which nonce has to be fetched
+                - $ref: '#/components/parameters/Broker-Id'
+            responses:
+                '200':
+                    description: Fetched nonce successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Nonce'
