@@ -31,26 +31,9 @@
       "url": "api-reference"
     }
   ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
-    }
-  ],
   "navigation": [
     {
-      "group": "Get Started",
+      "group": "Getting Started",
       "pages": [
         "introduction",
         "quickstart",
@@ -58,16 +41,36 @@
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Trade on LogX",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "trading-basics/perpetual-futures",
+        "trading-basics/perpetual-markets",
+        "trading-terms/buying-power",
+        "trading-terms/open-interest",
+        "trading-terms/unrealized-realized-pnl",
+        "trading-terms/funding-rate",
+        "trading-terms/liquidations",
+        "trading-basics/trading-fees"
+        
       ]
     },
+    {
+      "group": "Smart Contract Overview",
+          "pages": [
+            "smart-contracts/contract-address",
+            "smart-contracts/contract-flow"
+
+          ]
+    },
+    {
+      "group": "Supported Markets",
+          "pages": [
+            "smart-contracts/supported-chains",
+            "smart-contracts/supported-markets"
+
+          ]
+    },
+    
     {
       "group": "API Documentation",
       "pages": [
