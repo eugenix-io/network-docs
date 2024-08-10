@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "LogX Network",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -35,23 +35,35 @@
     {
       "group": "Getting Started",
       "pages": [
-        "introduction",
+        "logx-network",
         "quickstart",
-        "development"
+        "logx-edge",
+        "roadmap"
+       
       ]
     },
     {
       "group": "Trade on LogX",
       "pages": [
+        "trading-basics/logx-architecture",
         "trading-basics/perpetual-futures",
-        "trading-basics/perpetual-markets",
-        "trading-terms/buying-power",
-        "trading-terms/open-interest",
-        "trading-terms/unrealized-realized-pnl",
-        "trading-terms/funding-rate",
-        "trading-terms/liquidations",
-        "trading-basics/trading-fees"
+        "trading-basics/prediction-markets",
+        "trading-basics/token-staking-and-vesting",
+        "trading-basics/price-and-oracles",
+        {
+          "group": "Trading Terms",
+              "pages": [
+                "trading-terms/buying-power",
+                "trading-terms/open-interest",
+                "trading-terms/unrealized-realized-pnl",
+                "trading-terms/funding-rate",
+                "trading-terms/liquidations"
+              ]
+        },
         
+        "smart-contracts/supported-chains",
+        "smart-contracts/supported-markets"
+
       ]
     },
     {
@@ -62,14 +74,7 @@
 
           ]
     },
-    {
-      "group": "Supported Markets",
-          "pages": [
-            "smart-contracts/supported-chains",
-            "smart-contracts/supported-markets"
-
-          ]
-    },
+    
     {
       "group": "API Documentation",
       "pages": [
