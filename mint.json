@@ -1,29 +1,19 @@
 {
     "$schema": "https://mintlify.com/schema.json",
-    "name": "Starter Kit",
+    "name": "LogX Network",
     "logo": {
         "dark": "/logo/dark.svg",
         "light": "/logo/light.svg"
     },
     "favicon": "/favicon.svg",
     "colors": {
-        "primary": "#0D9373",
-        "light": "#07C983",
+        "primary": "#07D6B0",
+        "light": "#07D6B0",
         "dark": "#0D9373",
         "anchors": {
             "from": "#0D9373",
-            "to": "#07C983"
+            "to": "#07D6B0"
         }
-    },
-    "topbarLinks": [
-        {
-            "name": "Support",
-            "url": "mailto:hi@mintlify.com"
-        }
-    ],
-    "topbarCtaButton": {
-        "name": "Dashboard",
-        "url": "https://dashboard.mintlify.com"
     },
     "tabs": [
         {
