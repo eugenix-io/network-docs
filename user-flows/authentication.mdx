@@ -6,13 +6,13 @@ icon: "lock"
 User authentication in the LogX Network involves a series of steps that ensure secure access and interaction with the platform. This step-by-step guide to the authentication process along with details about the underlying flow is mentioned below.
 
 <Steps>
-  <Step title="Step 1: Generate Authentication Session Data">
+  <Step title="Generate Authentication Session Data">
     The initial step involves generating the authentication session data using the user's address. This data includes the session key, sub-account ID, and public key.
   </Step>
-  <Step title="Step 2: Register Account">
+  <Step title=" Register Account">
     The user’s public key is registered with the platform. This involves generating a digital signature using the user’s private key.
   </Step>
-  <Step title="Step 3: Send Authentication Request">
+  <Step title="Send Authentication Request">
     ```jsx Auth Payload
     {
     "chainId": 42161,
