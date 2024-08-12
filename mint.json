@@ -84,7 +84,6 @@
       "group": "API Documentation",
       "pages": [
           "api-reference/introduction",
-          "api-reference/authentication",
           {
               "group": "Registration",
               "pages": ["api-reference/endpoint/register-account"]
