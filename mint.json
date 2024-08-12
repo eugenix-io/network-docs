@@ -76,7 +76,8 @@
       "group": "Supported Chains and Markets",
           "pages": [ 
             "smart-contracts/supported-chains",
-            "smart-contracts/supported-markets"
+            "smart-contracts/supported-markets",
+            "smart-contracts/supported-colllateral"
           ]
     },
    
