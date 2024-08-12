@@ -1,9 +1,9 @@
 ---
 title: LogX Network Architecture
-icon: 'terminal'
+icon: "sitemap"
 ---
 
-<img height="200" src="../images/logx-architecture.jpeg" />
+<img height="200" src="../images/logx-arch.svg" />
 
 
 The LogX Network is designed to bridge the gap between centralized exchanges (CEXes) and decentralized exchanges (DEXes), offering the best of both worlds to traders. Our architecture is built to address the critical challenges of liquidity, security, and execution, ensuring that traders have a seamless and efficient trading experience without compromising on trust or control.
@@ -54,15 +54,17 @@ At the core of LogX Network's architecture is our **Intent-Based Architecture an
 6. **Formation of a Bilateral Agreement:**
    - A bilateral agreement is established between the solver and the trader. This contract is isolated and symmetrical, ensuring that depending on the price movement of the position, one party is obligated to pay the other as profit or loss (PnL).
    - This agreement remains in effect until the trader closes the position or if either party is liquidated (managed automatically by a neutral third party based on the margin health).
-
+<Info>   
    **Note:** Steps 4 - 6 take place **on-chain**, where the quotation and bilateral agreement are recorded and enforced.
+</Info>
 
 7. **Solver Hedging:**
    - The solver may choose to hedge their position exposure by leveraging various sources, including centralized exchanges (CEXes), other decentralized exchanges (DEXes), over-the-counter (OTC) desks, non-linear options, or spot holdings.
    - Additionally, the solver can net positions with other trades or collaborate with other solvers in the network to optimize their exposure.
 
-   **Note:** Step 7 occurs **off-chain**, with the solver responsible for managing their own hedging strategy. Since collateral is locked into the **Bilateral Agreement** and completely isolated from external factors, users do not need to make any trust assumptions regarding the solvency of the solver on-chain.
-
+<Note> 
+  **Note:** Step 7 occurs **off-chain**, with the solver responsible for managing their own hedging strategy. Since collateral is locked into the **Bilateral Agreement** and completely isolated from external factors, users do not need to make any trust assumptions regarding the solvency of the solver on-chain.
+</Note>
 ## **Key Benefits of LogX Architecture**
 
 ### **1. Combining CEX Liquidity with DEX Security**

@@ -2,10 +2,10 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "LogX Network",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/logx-social-dark.svg",
+    "light": "/logo/logx-social-white.svg"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "./logx_favicon.svg",
   "colors": {
     "primary": "#0D9373",
     "light": "#07C983",
@@ -18,13 +18,9 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "https://discord.gg/logx"
     }
   ],
-  "topbarCtaButton": {
-    "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
-  },
   "tabs": [
     {
       "name": "API Reference",
@@ -43,30 +39,6 @@
       ]
     },
     {
-      "group": "Trade on LogX",
-      "pages": [
-        "trading-basics/logx-architecture",
-        "trading-basics/perpetual-futures",
-        "trading-basics/prediction-markets",
-        "trading-basics/token-staking-and-vesting",
-        "trading-basics/price-and-oracles",
-        {
-          "group": "Trading Terms",
-              "pages": [
-                "trading-terms/buying-power",
-                "trading-terms/open-interest",
-                "trading-terms/unrealized-realized-pnl",
-                "trading-terms/funding-rate",
-                "trading-terms/liquidations"
-              ]
-        },
-        
-        "smart-contracts/supported-chains",
-        "smart-contracts/supported-markets"
-
-      ]
-    },
-    {
       "group": "Smart Contract Overview",
           "pages": [
             "smart-contracts/contract-address",
@@ -74,6 +46,39 @@
 
           ]
     },
+    {
+      "group": "Trade on LogX",
+      "pages": [
+        "trading-basics/logx-architecture",
+        "trading-basics/perpetual-futures",
+        "trading-basics/prediction-markets",
+        "trading-basics/token-staking-and-vesting",
+        {
+          "group": "Trading Terms",
+          "icon": "book",
+              "pages": [
+                "trading-terms/buying-power",
+                "trading-terms/open-interest",
+                "trading-terms/fee-structure",
+                "trading-terms/liquidations"
+              ]
+        }
+      ]
+    },
+    {
+      "group": "User Flows",
+          "pages": [ 
+            "user-flows/authentication"
+          ]
+    },
+    {
+      "group": "Supported Chains and Markets",
+          "pages": [ 
+            "smart-contracts/supported-chains",
+            "smart-contracts/supported-markets"
+          ]
+    },
+   
     
     {
       "group": "API Documentation",
@@ -123,8 +128,8 @@
   }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://www.linkedin.com/company/mintsearch"
+    "x": "https://x.com/LogX_trade",
+    "github": "https://github.com/eugenix-io",
+    "discord": "https://discord.gg/logx"
   }
 }
