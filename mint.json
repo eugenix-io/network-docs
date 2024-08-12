@@ -68,7 +68,8 @@
     {
       "group": "User Flows",
           "pages": [ 
-            "user-flows/authentication"
+            "user-flows/authentication",
+            "user-flows/deposit-withdraw"
           ]
     },
     {
