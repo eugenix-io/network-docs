@@ -39,15 +39,7 @@
                 "smart-contracts/contract-flow"
             ]
         },
-        {
-      "group": "LogX Whitepaper",
-          "pages": [ 
-            "whitepaper/introduction",
-            "whitepaper/logx-Architecture",
-            "whitepaper/logx-overview",
-            "whitepaper/risks"
-          ]
-    },
+      
     {
             "group": "Trade on LogX",
             "pages": [
