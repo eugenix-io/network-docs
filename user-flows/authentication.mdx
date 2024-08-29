@@ -1,6 +1,6 @@
 ---
 title: User Authentication
-icon: "lock"  
+icon: 'lock'
 ---
 
 User authentication in the LogX Network involves a series of steps that ensure secure access and interaction with the platform. This step-by-step guide to the authentication process along with details about the underlying flow is mentioned below.
@@ -25,7 +25,7 @@ User authentication in the LogX Network involves a series of steps that ensure s
     "subaccountId": "1_0xB7FF7301159fB491821Bc126fCfd54dFFC0BbF2f_1"
     }
     ```
-    The final step is sending an authentication request to the LogX Network's auth API with the necessary data such as the Ethereum address, signatures, and sub-account ID and receiving the logx_key and logx_secret.
+    The final step is to send an authentication request to the LogX Network's auth API with the necessary data such as the Ethereum address, signatures, and sub-account ID and receiving the logx_key and logx_secret.
     ```json Auth Response
     {
   "body": {
@@ -37,18 +37,18 @@ User authentication in the LogX Network involves a series of steps that ensure s
 }
 
     ```
+
   </Step>
 </Steps>
-
 
 ### **1. Generate Authentication Session Data**
 
 The authentication process starts by generating session data for the user.
 
-- **Components**:
-  - `sessionKey`: Generated using a new Ethereum wallet.
-  - `subAccountIdString` and `subAccountIdHash`: Created by hashing the user's address.
-  - `publicKey`: Derived from the user `address`.
+-   **Components**:
+    -   `sessionKey`: Generated using a new Ethereum wallet.
+    -   `subAccountIdString` and `subAccountIdHash`: Created by hashing the user's address.
+    -   `publicKey`: Derived from the user `address`.
 
 This session data forms the basis for subsequent steps and is crucial for establishing a secure session.
 
@@ -56,25 +56,28 @@ This session data forms the basis for subsequent steps and is crucial for establ
 
 The next step is to register the account on the LogX Network:
 
-- A new Ethereum wallet is generated with a public key and a private key.
-- A `message` object is created containing details like the sub-account ID, user address, session key, and nonce.
-- The `domain` object contains domain-specific data like the contract name, version, chain ID, and verifying contract address.
-- The user signs the message with their Ethereum wallet to generate an `Ethereum signature`.
-- The private key is used to sign the message again using  producing a `signing signature`.
-- A POST request is then sent to the authentication API with all this data to register the account.
+-   A new Ethereum wallet is generated with a public key and a private key.
+-   A `message` object is created containing details like the sub-account ID, user address, session key, and nonce.
+-   The `domain` object contains domain-specific data like the contract name, version, chain ID, and verifying contract address.
+-   The user signs the message with their Ethereum wallet to generate an `Ethereum signature`.
+-   The private key is used to sign the message again using producing a `signing signature`.
+-   A POST request is then sent to the authentication API with all this data to register the account.
 
 ### **3. Send Authentication Request**
 
 Finally, the authentication request is sent to the LogX Network's API:
 
-- The request payload includes the `chainId`, `ethAddress`, `ethSignature`, `expiryTs`, `nonce`, `signingKey`, `signingSignature`, and `subaccountId`.
-- Upon successful registration, the API responds with a `logx_key` and `logx_secret`, which are stored in the local storage for future authentication.
+-   The request payload includes the `chainId`, `ethAddress`, `ethSignature`, `expiryTs`, `nonce`, `signingKey`, `signingSignature`, and `subaccountId`.
+-   Upon successful registration, the API responds with a `logx_key` and `logx_secret`, which are stored in the local storage for future authentication.
 
 ## **Signing with EIP-712**
 
 The signing process uses EIP-712, a standard for typed structured data hashing and signing. It ensures that the signatures are both human-readable and secure, allowing for easier verification on the blockchain.
+
 ### **Message Types**
+
 The message types are required for the EIP-712 algorithm to do a proper signing. Here is a list of all message types as JSON:
+
 ```
 
     EIP712Domain: [
@@ -197,17 +200,17 @@ The message types are required for the EIP-712 algorithm to do a proper signing.
 
 The `definedTypes` object is used to describe the types of data structures that can be signed using the EIP-712 standard. These include:
 
-- **Register**
-- **DepositRequest**
-- **ClaimAndStakeRequest**
-- **StakeLogXRequest**
-- **UnstakeLogXRequest**
-- **Withdraw**
-- **ClaimRewards**
-- **Order**
-- **WithdrawCollateral**
-- **SettleUserPnl**
-- **ClaimLogX**
-- **WithdrawLogX**
+-   **Register**
+-   **DepositRequest**
+-   **ClaimAndStakeRequest**
+-   **StakeLogXRequest**
+-   **UnstakeLogXRequest**
+-   **Withdraw**
+-   **ClaimRewards**
+-   **Order**
+-   **WithdrawCollateral**
+-   **SettleUserPnl**
+-   **ClaimLogX**
+-   **WithdrawLogX**
 
 These types ensure that all actions on the platform are cryptographically secure and verified on the blockchain.
