@@ -40,9 +40,17 @@
             ]
         },
         {
+      "group": "LogX Whitepaper",
+          "pages": [ 
+            "whitepaper/introduction",
+            "whitepaper/logx-Architecture",
+            "whitepaper/logx-overview",
+            "whitepaper/risks"
+          ]
+    },
+    {
             "group": "Trade on LogX",
             "pages": [
-                "trading-basics/logx-architecture",
                 "trading-basics/perpetual-futures",
                 "trading-basics/prediction-markets",
                 "trading-basics/token-staking-and-vesting",
@@ -65,7 +73,8 @@
                 "user-flows/deposit-withdraw"
             ]
         },
-        {
+       
+    {
             "group": "Supported Chains and Markets",
             "pages": [
                 "smart-contracts/supported-chains",
