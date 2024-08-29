@@ -43,8 +43,8 @@
       "group": "LogX Whitepaper",
           "pages": [ 
             "whitepaper/introduction",
-            "whitepaper/logx-Architecture",
             "whitepaper/logx-overview",
+            "whitepaper/logx-Architecture",
             "whitepaper/risks"
           ]
     },
