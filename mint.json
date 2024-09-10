@@ -48,7 +48,15 @@
             "whitepaper/risks"
           ]
     },
-
+    {
+        "group": "LogX Tokenomics",
+            "pages": [ 
+              "tokenomics/Logx",
+              "tokenomics/utility",
+              "tokenomics/distribution"
+             
+            ]
+      },
     {
             "group": "Trade on LogX",
             "pages": [
