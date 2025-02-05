@@ -4,16 +4,16 @@ info:
     version: 1.0.0
     description: API for managing and executing orders on the LogX Network.
 
-servers:
-    - url: https://testnet-api.logx.network
-      description: Gateway Server for the LogX Network.
-      variables: {}
-      x-google-endpoints:
-          - name: gateway-vraqb64neq-uc.a.run.app
-            allowCors: true
-      x-google-backend:
-          address: https://logx-inf-backend-vraqb64neq-uc.a.run.app
-          protocol: h2
+# servers:
+#     - url: https://testnet-api.logx.network
+#       description: Gateway Server for the LogX Network.
+#       variables: {}
+#       x-google-endpoints:
+#           - name: gateway-vraqb64neq-uc.a.run.app
+#             allowCors: true
+#       x-google-backend:
+#           address: https://logx-inf-backend-vraqb64neq-uc.a.run.app
+#           protocol: h2
 
 components:
     parameters:
@@ -581,6 +581,9 @@ paths:
                     application/json:
                         schema:
                             $ref: '#/components/schemas/OrderRequest'
+            servers:
+              - url: https://mainnetapiserverwriter.logx.network
+                description: Writer Server
             responses:
                 '200':
                     description: The order was created successfully.
@@ -593,6 +596,9 @@ paths:
         get:
             summary: Retrieve funding rates.
             operationId: fetchFundingRate
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: Funding rates were retrieved successfully.
@@ -609,6 +615,9 @@ paths:
                 - $ref: '#/components/parameters/Logx-Key'
                 - $ref: '#/components/parameters/Logx-Secret'
                 - $ref: '#/components/parameters/Broker-Id'
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: Quotes were retrieved successfully.
@@ -625,6 +634,9 @@ paths:
                 - $ref: '#/components/parameters/Logx-Key'
                 - $ref: '#/components/parameters/Logx-Secret'
                 - $ref: '#/components/parameters/Broker-Id'
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: User positions and trade history were retrieved successfully.
@@ -641,6 +653,9 @@ paths:
                 - $ref: '#/components/parameters/Logx-Key'
                 - $ref: '#/components/parameters/Logx-Secret'
                 - $ref: '#/components/parameters/Broker-Id'
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: User orders were retrieved successfully.
@@ -657,6 +672,9 @@ paths:
                 - $ref: '#/components/parameters/Logx-Key'
                 - $ref: '#/components/parameters/Logx-Secret'
                 - $ref: '#/components/parameters/Broker-Id'
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: Withdrawable token balances were retrieved successfully.
@@ -676,6 +694,9 @@ paths:
                     application/json:
                         schema:
                             $ref: '#/components/schemas/WithdrawCollateralRequest'
+            servers:
+              - url: https://mainnetapiserverwriter.logx.network
+                description: Writer Server
             responses:
                 '200':
                     description: The token balance was withdrawn successfully.
@@ -692,6 +713,9 @@ paths:
                 - $ref: '#/components/parameters/Logx-Key'
                 - $ref: '#/components/parameters/Logx-Secret'
                 - $ref: '#/components/parameters/Broker-Id'
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: User data was retrieved successfully.
@@ -711,6 +735,9 @@ paths:
                   schema:
                       type: string
                   description: Specifies the market type, either PERPETUAL or SPOT.
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: Market details were retrieved successfully.
@@ -733,6 +760,9 @@ paths:
                   schema:
                       type: string
                   description: The unique identifier of the order to be canceled.
+            servers:
+              - url: https://mainnetapiserverwriter.logx.network
+                description: Writer Server
             responses:
                 '200':
                     description: The order was canceled successfully.
@@ -752,6 +782,9 @@ paths:
                     application/json:
                         schema:
                             $ref: '#/components/schemas/AuthRequest'
+            servers:
+              - url: https://mainnetapiserverwriter.logx.network
+                description: Writer Server
             responses:
                 '200':
                     description: The subaccount was registered successfully.
@@ -772,6 +805,9 @@ paths:
                       type: string
                   description: The subaccount ID for which the nonce is to be retrieved.
                 - $ref: '#/components/parameters/Broker-Id'
+            servers:
+              - url: https://mainnetapiserver.logx.network
+                description: Reader Server
             responses:
                 '200':
                     description: The nonce was retrieved successfully.
