@@ -30,68 +30,47 @@
     "navigation": [
         {
             "group": "Getting Started",
-            "pages": ["logx-network", "quickstart", "logx-edge", "roadmap","audit-reports"]
+            "pages": ["logx-network", "quickstart", "roadmap"]
         },
         {
-            "group": "Smart Contract Overview",
+            "group": "LogX Whitepaper",
             "pages": [
-                "smart-contracts/contract-address",
-                "smart-contracts/contract-flow"
-            ]
-        },
-           {
-      "group": "LogX Whitepaper",
-          "pages": [ 
-            "whitepaper/introduction",
-            "whitepaper/logx-overview",
-            "whitepaper/logx-Architecture",
-            "whitepaper/risks"
-          ]
-    },
-    {
-        "group": "LogX Tokenomics",
-            "pages": [ 
-              "tokenomics/Logx",
-              "tokenomics/utility",
-              "tokenomics/distribution"
-             
-            ]
-      },
-    {
-            "group": "Trade on LogX",
-            "pages": [
-                "trading-basics/perpetual-futures",
-                "trading-basics/prediction-markets",
-                "trading-basics/token-staking-and-vesting",
-                {
-                    "group": "Trading Terms",
-                    "icon": "book",
-                    "pages": [
-                        "trading-terms/buying-power",
-                        "trading-terms/open-interest",
-                        "trading-terms/fee-structure",
-                        "trading-terms/liquidations"
-                    ]
-                }
+                "whitepaper/introduction",
+                "whitepaper/logx-Architecture",
+                "whitepaper/risks",
+                "whitepaper/rewards",
+                "whitepaper/audit-reports"
             ]
         },
         {
-            "group": "User Flows",
+            "group": "Guides",
             "pages": [
-                "user-flows/authentication",
-                "user-flows/deposit-withdraw"
+                "guides/perp-markets",
+                "guides/option-markets",
+                "guides/pre-markets",
+                "guides/spot-markets",
+                "guides/deposit-withdraw"
             ]
         },
-       
-    {
-            "group": "Supported Chains and Markets",
+        {
+            "group": "$LOGX",
             "pages": [
-                "smart-contracts/supported-chains",
-                "smart-contracts/supported-markets",
-                "smart-contracts/supported-colllateral"
+                "tokenomics/utility",
+                "tokenomics/distribution",
+                "tokenomics/staking"
             ]
         },
-
+        {
+            "group": "Technical Overview",
+            "pages": [
+                "technical-overview/authentication",
+                "technical-overview/deposit-withdraw",
+                "technical-overview/supported-chains-deposits",
+                "technical-overview/contract-address",
+                "technical-overview/contract-flow",
+                "technical-overview/brand-assets"
+            ]
+        },
         {
             "group": "API Documentation",
             "pages": [
