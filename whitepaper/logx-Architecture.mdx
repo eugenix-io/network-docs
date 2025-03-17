@@ -2,96 +2,70 @@
 title: Logx Network Architecture
 icon: "sitemap"  
 ---
-The biggest issues that DeFi currently faces are the issue of liquidity fragmentation and subpar consumer experience on-chain. This is one of the major reasons why CEXs continue to thrive.
 
-## Current Derivatives Trading Architecture:
+![Tech Architecture](../images/techarch.png)
+## **Chain Agnostic Trading**
 
-Perp DEXs historically followed either Orderbook , AMM or V-AMM based architecture.
+One of the major challenges in DeFi is liquidity fragmentation. Users often find their funds scattered across various networks in multiple token formats, necessitating fund transfers to execute trades on specific networks. LogX Network aims to address this issue.
 
--   **On-Chain Order books**
+With LogX Network, you can deposit funds from any supported blockchain network and use them to trade directly on the LogX Network. For instance, if you have $100 on Arbitrum and *$*50 on Optimism, you can seamlessly place a trade worth $150 on LogX Network. We consolidate funds from all networks for a wallet, enabling truly chain-agnostic trading experience.
 
-    Orderbooks are the most widely used method for crypto exchange as they enable **peer-to-peer (P2P) trading** with granular control of liquidity. They offer market transparency, high efficiency from a fee and liquidity perspective, and a great degree of internal price discovery. However, they have significant disadvantages like:
+## **Account Abstraction Based capabilities**
 
-    -   **Limited Throughput (speed):** Because order books require high-frequency updates of orders, they are highly reliant on throughput to operate. Every millisecond counts, as evidenced by traditional finance market makers optimising for speed at the cost of billions of dollars annually.
-    -   **Centralisation:** Firstly, because of the limits of the blockchain throughput, on-chain order books typically have **off-chain matching engines**. This is a centralisation risk because the economic incentive to front-run order flow is exceptional. The payment for order flow (PFOF) market size in traditional finance is over $4B annually.
-    -   **Market-Making and Liquidity:** On-chain order book exchanges have struggled to build deep liquidity with the on-chain markets being so fragmented (many competing blockchains and exchanges). Every new orderbook exchange must necessarily fragment or capture liquidity from existing ones. This is simply because maker orders in an order book are committed capital; this contrasts to how LogX approaches market-making with **just-in-time liquidity**.
+We have integrated Account Abstraction (AA) into the core stack of LogX Network, enhancing our platform with several seamless efficiencies:
 
-    The result of this fragmentation is a liquidity crunch, with trading volume typically gravitating towards exchanges with the highest liquidity.
+- **Smart Accounts**: Every user on LogX Network opens a smart contract wallet-based account. This acts as a margin account, allowing users to deposit funds from any supported network seamlessly within seconds.
+- **Gasless Trading Experience**: One of the key motivations for the development of Layer 2 networks was to reduce base layer gas fees. Although modern Layer 2 networks generally have lower gas fees, costs can vary between networks and spike during periods of congestion, adding to the total cost of initiating trades and hindering user onboarding. By integrating AA and creating smart contract wallets, we sponsor the gas fees, providing a Centralized Exchange (CEX)-like, gas less trading experience.
+- **Session Keys:** The integration of Account Abstraction masks the complexities of underlying blockchain processes. We leverage session keys to open and close trades, this enhancement allows users to place trades without the need to approve or sign transactions, streamlining the trading experience.
 
--   **Automatic Market Maker (AMM) Models:**
+## **Token Agnostic Margin and Settlement**
 
-    While AMMs are not directly perpetual futures contracts, they can allow traders to have **Delta = 1 exposure** to underlying assets with leverage via borrowing funds (the price move in the underlying asset is reflected identically in the price of the derivative).
+To enhance user experience, we have introduced the innovative concept of **Buying Power** on the LogX Network. Rather than evaluating tokens at their nominal value for matching orders and margins, each wallet (margin account) possesses its own "Buying Power". This allows users to use any token in their Smart Wallet as collateral to open trades and settle margins. Furthermore, buying power enables us to match orders independently of the user's available collateral. For instance, if a user has **`100 USDC`** and **`0.1 ETH`** in their Smart Wallet, considering $4000 as price of ETH, the total buying power would be approximately **`$400`**. Consequently the user can place trades up to a **`$400`** margin. User's PNL is settled in quote token; positive balances will be transferred to the use's Smart Wallet from Log's vault. This approach revolutionises how trades are executed across networks on derivatives exchanges.
 
-    These exchanges operate primarily by offering traders leverage via borrowing and utilise spot-AMM liquidity and markets to match buy and sell orders, which allow for internal price discovery.
+## **Seamless Smart Wallet Experience**
 
-    However, there are reasons this model has not found product market fit:
+When a user deposits tokens into the LogX Network, a Smart Wallet is automatically created on the user's behalf. This Smart Wallet also serves as the margin account, which is used to settle the user's P&L after closing trades. In most DEXes, users must deposit their funds into the DEX's margin account to trade, where they lose custody, thus centralizing the user flow. By using Smart Wallets, LogX addresses this limitation and provides the most secure margin accounts for users. Additionally, Smart Wallets tightly integrate the chain with the trading exchange, opening up new avenues for innovation on the blockchain where each address can function as a margin account.
 
-    -   Leverage is limited by lender capital, which has to be heavily incentivised. This means leverage is largely limited (2–5x) and extremely expensive for traders and the protocol.
-    -   Lenders face credit risks because traders are at risk of insolvency.
+## **Truly Omni-chain Defi Super App**
 
-    There is no easy way to work around the capital-intensive liquidity challenges of this model, and because of the capital inefficiencies presented, this model has not found widespread adoption.
+LogX Network will utilise Hyperlane's warp routes to seamlessly transfer tokens into and out of the chain. Users will deposit the tokens they wish to use as collateral into Hyperlane's contract on their chosen chain. Once the tokens are deposited on the source chain and the validator announces it on the chain, the relayer relays the message, and synthetic assets are minted on the destination chain in a decentralised manner. This process makes bridging—or depositing—to the chain as fast as, if not faster than, depositing funds into any DEX's margin account. Additionally, this efficiency enables us to launch the LogX Network on a new network in less than two days. This represents one of the most advanced scaling infrastructures built for derivatives trading.
 
--   **Oracle Based Virtual Automatic Market Maker (vAMM) Models:**
+## **Architecture to support any Asset Type**
 
-    The vAMM model, popularised by platforms like GMX, has been an innovative market response to current challenges in on-chain order book shortcomings. This model has gained traction with considerable daily volume and now many iterations of forks.
+LogX Network currently supports trading of perpetuals, spots, options and pre-market, that to its architecture design we were able to scale to broad range of assets very quickly. Very soon yield products, RWAs will also be live on LogX network.
 
-    **vAMM exchanges allow for guaranteed order execution, high leverage, and predictable trade slippage.**
+## **Capital Efficiency**
 
-    This model hinges on a counterparty liquidity pool (LP), which serves as the de facto counterparty for trader positions. However, this approach is fraught with inefficiencies:
+On the LogX Network, orders from all networks converge at a single venue, ensuring low trading costs and exceptionally fast order matching. This aggregation of orders eliminates the need for abundant liquidity across multiple sources, thereby optimising capital use and enhancing trading efficiency. This streamlined approach not only reduces overhead but also simplifies the trading process for users.
 
-    -   **Capital Inefficiency:** Liquidity remains idle and underutilised, with the LP counter-trading all positions, requiring restricted open interest (OI) due to lack of price discovery, especially on volatile assets, to protect LP depositors.
-    -   **High Costs:** Without price discovery mechanisms, the protocol can't adequately price risks, leading to higher fees for execution, borrowing, and funding, with most platform revenues (up to 70%) going to LPs to offset the risk of losses from counter-trading all positions.
-    -   **Limited Asset Range:** Listing long-tail and volatile assets is risky for LPs, leading to severely restricted open interest (OI) and high fees plus slippage to offset the risk.
-    -   **Fragmented Liquidity:** VAMMS suffer from fragmented liquidity as large pools are needed for trades, with new forks pulling liquidity from existing protocols, worsening overall conditions, limiting multi-chain deployments, and making incentivising liquidity costly through inflationary rewards at the expense of stakeholder value.
+## **Exotic Trading Markets**
 
-Currently, centralized exchanges offer the most liquid markets. Traders who experience lower liquidity, higher slippage, and higher fees on-chain will naturally prefer centralized exchanges until these conditions improve. As long as traders remain on centralized exchanges, they will continue to be the most efficient venues for liquidity.
+Traders constantly seek a diverse array of markets. Thanks to our innovative order matching system and liquidity model, we are able to support an extensive variety of exotic trading markets, including memecoins, pre-market token pairs more as quickly as possible.
 
-Our approach allows traders to enjoy the best aspects of **CEX** trading:
+## **Innovative Order Book Matching System**
 
--   Deep Liquidity
--   Seamless Execution
--   Tight Spreads
--   Low Fees
+To build something as groundbreaking as the LogX Network, traditional models for DEXs simply won't suffice. Currently, order books and AMMs are the most common methods used by DEXs. We are utilising an advanced system known as intent-based order book matching. The concept here involves collaborating with multiple market makers to continuously stream price quotations and fetch the best prices for each asset type. This method proves far more efficient in securing the best and most cost-effective means to fulfil trades.
 
-At the same time, executing trades on-chain provides the benefits of **DEX** trading:
+## **Simple, Easy-to-Use Interface**
 
--   Trustless Environment
--   Immutable Positions
--   Reduced Risk of Counterparty Insolvency
--   Permissionless Access
+One of the reasons centralised exchanges (CEXs) succeed is due to their extremely simple and easy-to-use trading experience. After serving over 160,000 traders and consulting with more than 10,000 of them, we have designed a trading terminal that is as intuitive as possible. We've stripped away all complexities from the trading interface, creating a streamlined user experience that just works—free from clunky charts or unnecessary fees that impede a trader's experience.
 
-**By combining these strengths, LogX Network delivers both liquidity and security without compromise.**
+## **Abundant Liquidity**
 
-## **Constant BID ASK streaming and Order Flow**
+We are collaborating with multiple market makers, all of whom are providing liquidity to the base LogX Network. All trades placed on different networks are collated on the LogX Network, ensuring ample liquidity to execute trades in less than a second at any time for any asset.
 
-The conventional Request for Quote (RFQ) procedure starts when a trader **indicates their desire** to buy or sell a specific derivative contract at a designated price and volume. Market makers then provide **customised bids** that cater to the trader's requirements. Once the trader places the request, our off-chain matching engine will match the trader's request with the best possible quote.
+## **Mobile-Friendly**
 
-This method **proactively streams quotations**, consistently presenting the optimal available quote at any moment. Consequently, users are instantly shown the **most favourable price quotation** available, facilitating more informed decision-making. This approach bypasses the lengthy and intricate steps found in traditional RFQ systems, providing a streamlined and effective trading experience.
+While most DEX infrastructures cater only to a small fraction of traders, our goal is to build systems for the masses, with mobile accessibility playing a crucial role. We've developed an interface that not only supports web based trading but is also optimized for a mobile-friendly experience.
 
-**This is a new kind of automatic market for quotations" (AMFQ) method for perp trading.**
+## **Composability**
 
--   Trader arrives at logX and selects the token market on which they want to trade by entering all the details.
--   The `solver` (market maker) provides an offer through LogX on conditions for the trade (price, slippage, fees, funding rates, collateral, etc.). This step happens automatically and in real time. No capital is committed by the solver at this time.
--   The trader then has all the pre-agreed conditions needed to open a trade streamed to them as an “quote” and can then choose to execute the trade. This solves a necessary and complex step in an RFQ process to receive and evaluate bids to select the best one.
+The LogX Network infrastructure has been developed with blockchain principles at its core. It allows anyone to use the LogX Network to deploy their trading interface on the network of their choice. This flexibility enables DEXes to offer their own interfaces and unique capabilities, enhancing the overall trading experience.
 
-<Info>
-    **Note:** Steps 1-3 happen `off-chain` through the LogX exchange.
-</Info>
+## **`$LOGX` Integration**
 
--   After reviewing the trade conditions, the trader places the trade, locking in the required collateral as the initial margin.
--   The AMM (Automated Market Maker) then evaluates the trade request and, if accepted, deposits the necessary initial margin into the contract.
--   This creates a direct, isolated contract between the trader and the AMM. The contract is perfectly balanced, with each party responsible for covering the other's potential gains or losses based on the position's price movement. The contract remains active until the trader closes the position or one party is liquidated, which is automatically managed by a neutral third party based on the margin health.
+The LogX Network has been purposefully built around the protocol's native `$LOGX` token, which serves as the official gas token of the network. The network is also designed to incorporate multiple utilities for $LOGX within the system, enhancing functionality and user engagement.
 
-<Tip>
-    **Note:** Steps 4-6 happen `on-chain` where the quotation and bilateral
-    agreement live.
-</Tip>
+## **Ability to power multiple applications**
 
--   The AMM can then manage its risk by "hedging" its position (e.g., being long 1 BTC) using various methods, such as trading on centralised exchanges (CEX), decentralised exchanges (DEX), over-the-counter (OTC) desks, options, or even holding the asset directly. Additionally, the AMM can offset its risk by balancing this position with other positions or with other AMMs in the network (in future implementations).
-<Info>
-    **Note:** Step 7 takes place off-chain, and the solver is solely
-    responsible for managing their hedging strategy.
-    <br /> Because collateral is locked into the bilateral agreement and
-    completely isolated from external factors, users do not have to make any
-    trust assumptions regarding the solvency of the solver on-chain.
-</Info>
+The LogX Network infrastructure is scalable far beyond derivatives trading. This robust platform can also power a diverse array of consumer applications, including spot trading, memecoin launchpads, leveraged prediction markets, real-world assets (RWAs), GameFi, SocialFi applications, and more!

@@ -1,0 +1,399 @@
+---
+title: Deposit / Withdrawal Flow
+icon: "money-bill-transfer"  
+---
+
+The deposit and withdrawal processes on the LogX Network involve several key steps to ensure secure and efficient transactions. This guide will walk you through the process of depositing and withdrawing tokens on the platform.
+
+## Deposit Flow
+
+<Steps>
+  <Step title="Approve Token Spending">
+    Before you can deposit tokens, you need to approve the platform's smart contract to spend your tokens. This is done by interacting with the token contract to grant the necessary permissions.
+
+    <Expandable title="Example Code">
+      <CodeGroup>
+
+    ```jsx JavaScript
+    import { ethers } from 'ethers';
+
+    // ERC20 ABI for approve function
+    const erc20ApproveAbi = [
+      "function approve(address spender, uint256 amount) returns (bool)"
+    ];
+
+    // Constants for Arbitrum chain
+    const RPC_URL = "https://arb1.arbitrum.io/rpc";
+    const USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
+    const HYP_ERC20_ADDRESS = "0x4882520D47491561F51ea96aBC0397776Efc6cFd";
+
+    /**
+     * Approve tokens for deposit
+     * @param {string} privateKey - User's private key
+     * @param {string} amount - Amount to approve (optional, approves unlimited if not provided)
+     * @returns {Promise<string>} Transaction hash
+     */
+    async function approve(privateKey, amount) {
+      try {
+        // Initialize provider and signer
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        const signer = new ethers.Wallet(privateKey, provider);
+
+        // Create contract instance
+        const tokenContract = new ethers.Contract(
+          USDC_ADDRESS,
+          erc20ApproveAbi,
+          signer
+        );
+
+        // Approve token spending (unlimited if amount not specified)
+        const approveAmount = amount
+          ? ethers.parseUnits(amount, 6) // USDC has 6 decimals
+          : ethers.MaxUint256;
+
+        // Send approval transaction
+        const tx = await tokenContract.approve(HYP_ERC20_ADDRESS, approveAmount);
+
+        // Wait for transaction confirmation
+        const receipt = await tx.wait();
+        console.log(`Approval successful. Transaction hash: ${receipt.hash}`);
+
+        return receipt.hash;
+      } catch (error) {
+        console.error("Error approving tokens:", error);
+        throw error;
+      }
+    }
+    ```
+      </CodeGroup>
+    </Expandable>
+  </Step>
+
+  <Step title="Execute Deposit">
+    After token approval, you can proceed to deposit your tokens. This involves specifying the amount and confirming the transaction.
+
+    <Expandable title="Example Code">
+      <CodeGroup>
+
+    ```jsx JavaScript
+    import { ethers } from 'ethers';
+    import { getSubAccountId } from './authentication';
+
+    // Constants
+    const RPC_URL = "https://arb1.arbitrum.io/rpc";
+    const HYP_ERC20_ADDRESS = "0x4882520D47491561F51ea96aBC0397776Efc6cFd";
+    const LOGX_CHAIN_ID = 936369; // LogX chain ID
+    const EXPLORER_URL = "https://arbiscan.io";
+
+    // HYP_ABI should include at least the transferRemote function
+    const HYP_ABI = [
+      "function transferRemote(uint32 _destination, bytes32 _recipient, uint256 _amountOrId) payable returns (bytes32 messageId)"
+    ];
+
+    /**
+     * Deposit tokens to LogX Network
+     * @param {string} privateKey - User's private key
+     * @param {string} address - User's address
+     * @param {string} amount - Amount to deposit (in token units, e.g. "100" for 100 USDC)
+     * @returns {Promise<string>} Transaction hash
+     */
+    async function deposit(privateKey, address, amount) {
+      try {
+        // Get subaccount ID hash
+        const { subAccountIdHash } = getSubAccountId(address);
+
+        // Initialize provider and signer
+        const provider = new ethers.JsonRpcProvider(RPC_URL);
+        const signer = new ethers.Wallet(privateKey, provider);
+
+        // Create contract instance with HYP_ABI
+        const hypContract = new ethers.Contract(
+          HYP_ERC20_ADDRESS,
+          HYP_ABI,
+          signer
+        );
+
+        // Convert amount to token units (USDC has 6 decimals)
+        const amountInTokenUnits = ethers.parseUnits(amount, 6);
+
+        // Execute the transferRemote function to deposit
+        console.log(`Depositing ${amount} USDC to LogX Network...`);
+        const tx = await hypContract.transferRemote(
+          LOGX_CHAIN_ID,
+          subAccountIdHash,
+          amountInTokenUnits
+        );
+
+        // Wait for transaction confirmation
+        const receipt = await tx.wait();
+
+        // Display success message
+        console.log(`Deposit transaction successful: ${EXPLORER_URL}/tx/${receipt.hash}`);
+        console.log(`Your ${amount} USDC should reflect on LOGX in a few minutes`);
+
+        return receipt.hash;
+      } catch (error) {
+        console.error("Error depositing tokens:", error);
+        throw error;
+      }
+    }
+    ```
+      </CodeGroup>
+    </Expandable>
+  </Step>
+
+  <Step title="Confirm Deposit Transaction">
+    Once the deposit transaction is initiated, monitor the status to ensure it is successfully confirmed on the blockchain. In case of any errors, retry the process or seek support.
+  </Step>
+</Steps>
+
+### **1. Approve Token Spending**
+
+To begin the deposit process, the platform's smart contract must be authorized to spend your tokens. This ensures that the platform has the necessary permissions to transfer the tokens on your behalf.
+
+- **Action**: Interact with the smart contract to approve the token transfer.
+- **Consideration**: Ensure you have selected the correct token and network for the approval process.
+
+### **2. Execute Deposit**
+
+Once the token spending is approved, you can proceed with depositing your tokens into the LogX platform.
+
+- **Action**: Specify the amount of tokens to deposit and confirm the transaction.
+- **Consideration**: The platform may prompt you to switch networks if the deposit needs to occur on a different blockchain.
+
+### **3. Confirm Deposit Transaction**
+
+After initiating the deposit, monitor the transaction to ensure it is successfully confirmed on the blockchain.
+
+- **Action**: Check the transaction status through your wallet or the platform's interface.
+
+## Withdrawal Flow
+
+<Steps>
+  <Step title="Withdraw Collateral">
+    The withdrawal process allows you to move tokens from the LogX Network back to your chosen blockchain.
+
+    <Expandable title="Example Code">
+      <CodeGroup>
+
+    ```jsx JavaScript
+    import { ethers } from 'ethers';
+    import { getSubAccountId } from './authentication';
+
+    /**
+     * Withdraw USDC collateral from LogX Network
+     * @param {number} chainId - Destination chain ID
+     * @param {string} address - User's Ethereum address
+     * @param {string} withdrawAmount - Amount to withdraw
+     * @returns {Promise<object>} Withdrawal result
+     */
+    async function withdrawCollateral(chainId, address, withdrawAmount) {
+      try {
+        // Constants
+        const API_BASE_URL = 'https://mainnetapiserverwriter.logx.network';
+        const LOGX_CHAIN_ID = 1337;
+        const ENDPOINT_CONTRACT_ADDRESS = '0xBC87C2397601391E66adeC581786dF3F8eeE6124';
+
+        // USDC product ID for ARB USDC on LogX Network
+        const USDC_PRODUCT_ID = 4;
+
+        // Get authentication session data
+        const {
+          sessionKey,      // Private key for signing
+          logx_key,        // LogX API key
+          logx_secret,     // LogX API secret
+          subAccountIdString,
+          subAccountIdHash,
+          nonce,
+          publicKey,       // Public key for the session
+        } = await getAuthSessionData(address);
+
+        // Prepare the message for EIP-712 signing
+        const message = {
+          subAccountId: subAccountIdHash,
+          sessionKey: publicKey,
+          productId: USDC_PRODUCT_ID,
+          amount: withdrawAmount,
+          nonce,
+          destinationChainId: chainId,
+          receiver: address,
+          chainId: LOGX_CHAIN_ID,
+        };
+
+        // Define the domain for EIP-712 signature
+        const domain = {
+          name: 'LogX',
+          version: '1',
+          chainId: LOGX_CHAIN_ID,
+          verifyingContract: ENDPOINT_CONTRACT_ADDRESS,
+        };
+
+        // Sign message with ethers
+        const signer = new ethers.Wallet(sessionKey);
+
+        // Define types for EIP-712 signing
+        const typeDefinition = {
+          WithdrawCollateral: [
+            { name: 'subAccountId', type: 'bytes32' },
+            { name: 'sessionKey', type: 'address' },
+            { name: 'productId', type: 'uint32' },
+            { name: 'amount', type: 'uint128' },
+            { name: 'nonce', type: 'uint128' },
+            { name: 'destinationChainId', type: 'uint256' },
+            { name: 'receiver', type: 'address' },
+            { name: 'chainId', type: 'uint256' },
+          ]
+        };
+
+        const signingSignature = await signer.signTypedData(
+          domain,
+          typeDefinition,
+          message
+        );
+
+        console.log(`Sending withdrawal request for ${withdrawAmount} USDC...`);
+
+        // Send API request
+        const response = await fetch(
+          `${API_BASE_URL}/api/v1/token/withdrawCollateral`,
+          {
+            method: 'POST',
+            body: JSON.stringify({
+              subAccountId: subAccountIdString,
+              sessionKey: publicKey,
+              productId: USDC_PRODUCT_ID,
+              amount: withdrawAmount,
+              nonce,
+              destinationChainId: chainId,
+              receiver: address,
+              chainId: LOGX_CHAIN_ID,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'broker-id': '1',
+              'logx-signer-address': publicKey,
+              'logx-user-address': address,
+              'logx-timestamp': new Date().getTime().toString(),
+              'logx-key': logx_key,
+              'logx-secret': logx_secret,
+              'logx-signature': signingSignature,
+            },
+          }
+        );
+
+        // Handle API errors
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(`Failed to withdraw: ${errorData.message || response.statusText}`);
+        }
+
+        // Process successful response
+        const result = await response.json();
+        console.log(`Withdrawal initiated successfully. Transaction ID: ${result.body?.txId || 'N/A'}`);
+        console.log(`Your ${withdrawAmount} USDC should reflect on your destination chain in a few minutes`);
+
+        return result;
+      } catch (error) {
+        console.error("Error during withdrawal:", error);
+        throw error;
+      }
+    }
+    ```
+      </CodeGroup>
+    </Expandable>
+  </Step>
+
+  <Step title="Helper Functions">
+    The withdrawal process requires authentication session data to sign the request.
+    
+    <Expandable title="Example Code">
+      <CodeGroup>
+
+    ```jsx JavaScript
+    /**
+     * Get authentication session data required for API calls
+     * @param {string} address - User's Ethereum address
+     * @returns {Promise<object>} Authentication session data with nonce
+     */
+    async function getAuthSessionData(address) {
+      const sessionData = getInitialAuthSessionData(address);
+      const nonce = await getNonce(address);
+      return {
+        ...sessionData,
+        nonce,
+      };
+    }
+    
+    /**
+     * Get initial authentication session data without nonce
+     * @param {string} address - User's Ethereum address
+     * @returns {object} Basic authentication session data
+     */
+    function getInitialAuthSessionData(address) {
+      // In a backend context, you would retrieve this from a secure storage
+      // This example assumes credentials are stored in environment variables
+      // You get logx_key and logx_secret when authenticating
+      const sessionKey = process.env.SESSION_KEY;
+      const logx_key = process.env.LOGX_KEY;
+      const logx_secret = process.env.LOGX_SECRET;
+      if (!sessionKey || !logx_key || !logx_secret) {
+        throw new Error('Invalid session key or missing LogX credentials');
+      }
+      const { subAccountIdString, subAccountIdHash } = getSubAccountId(address);
+      const publicKey = new ethers.Wallet(sessionKey).address;
+      return {
+        sessionKey,
+        logx_key,
+        logx_secret,
+        subAccountIdString,
+        subAccountIdHash,
+        publicKey,
+      };
+    }
+    
+    /**
+     * Get the current nonce for the account
+     * @param {string} address - User's Ethereum address
+     * @returns {Promise<number>} Current nonce
+     */
+    async function getNonce(address) {
+      const { subAccountIdHash } = getSubAccountId(address);
+      const API_BASE_URL = 'https://mainnetapiserverwriter.logx.network';
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/v1/subaccount/nonce/${subAccountIdHash}`,
+          {
+            headers: {
+              'Broker-Id': '1'
+            }
+          }
+        );
+        if (!response.ok) {
+          throw new Error('Failed to get nonce');
+        }
+        const data = await response.json();
+        return Number(data?.body?.nonce);
+      } catch (error) {
+        throw error;
+      }
+    }
+    ```
+      </CodeGroup>
+    </Expandable>
+  </Step>
+</Steps>
+
+### **1. Withdraw Collateral**
+
+The withdrawal process allows you to move tokens from the LogX Network back to your chosen blockchain.
+
+- **Action**: Prepare and sign a withdrawal request that includes your destination address and amount.
+- **Consideration**: Ensure you have the proper authentication data and API keys for your request.
+
+### **2. Helper Functions**
+
+The withdrawal process requires authentication session data to sign the request properly.
+
+- **Action**: Retrieve and use authentication session data to authorize your withdrawal.
+- **Consideration**: Keep your API keys and secrets secure during this process.
+- **Implementation**: The helper functions include methods to get authentication session data, retrieve the initial auth data, and fetch the current nonce from the API.

@@ -1,0 +1,373 @@
+---
+title: User Authentication
+icon: "lock"  
+---
+
+User authentication in the LogX Network involves a series of steps that ensure secure access and interaction with the platform. This comprehensive guide explains the authentication process in detail.
+
+<Steps>
+  <Step title="Generate Authentication Session Data">
+    The initial step involves generating the authentication session data using the user's address. This includes creating a session key, sub-account ID, and public key.
+  </Step>
+  <Step title="Register Account">
+    The user's public key is registered with the platform. This requires generating a digital signature using the user's private key and a session signature.
+  </Step>
+  <Step title="Send Authentication Request">
+    The final step is sending an authentication request to the LogX Network's auth API with the necessary data to receive API credentials.
+  </Step>
+</Steps>
+
+## Authentication Process Details
+
+### 1. Generate Authentication Session Data
+
+The authentication process starts by generating session data for the user:
+
+- **`sessionKey`**: Generated using a new Ethereum wallet
+- **`subAccountIdString`**: Format: `1_[ethAddress]_1`
+- **`subAccountIdHash`**: Created by hashing the subAccountIdString
+- **`publicKey`**: Derived from the session wallet
+
+This session data forms the basis for subsequent steps and is crucial for establishing a secure session.
+
+### 2. Register Account
+
+The next step is to register the account on the LogX Network:
+
+- A new Ethereum wallet is generated with a public key and a private key
+- A **`message`** object is created containing details like:
+  - sub-account ID
+  - user address
+  - session key
+  - expiry timestamp
+  - nonce
+  - chain ID
+- The **`domain`** object contains domain-specific data:
+  - contract name ("LogX")
+  - version ("1")
+  - chain ID
+  - verifying contract address
+- The user signs the message with their Ethereum wallet to generate an **`ethSignature`**
+- The private key is used to sign the message again to produce a **`signingSignature`**
+
+### 3. Send Authentication Request
+
+Finally, the authentication request is sent to the LogX Network's API:
+
+```jsx
+// Auth Request Payload
+{
+  "chainId": 42161,
+  "ethAddress": "0xB7FF7301159fB491821Bc126fCfd54dFFC0BbF2f",
+  "ethSignature": "0x617ee55cbfe815b08bc3243446e0a5aeb3bf1397f0468d6ef415467f73a48dc207fca5333fe049c0da4032fe8504a2950d751a6f725b04fd3b2829341fe546741c",
+  "expiryTs": 1723924122893,
+  "nonce": 2,
+  "signingKey": "0xC77572f175B541bE7F5273d0fd47F81eBc0b5b37",
+  "signingSignature": "0x7a6ca94459031e5829d72ad2bf3978a43298479933797d68362f336203d5a92c72e9dc88793135f26d5a01a74ae7acc8ea0ed7fba33bc85b54870df3471c62cc1b",
+  "subaccountId": "1_0xB7FF7301159fB491821Bc126fCfd54dFFC0BbF2f_1"
+}
+```
+
+Upon successful registration, the API responds with a **`logx_key`** and **`logx_secret`**:
+
+```json
+// Auth Response
+{
+  "body": {
+    "logx_key": "f88b017268b7421791f79c9eb07506e2",
+    "logx_secret": "268a8bf715dcc1642487805dbb9900665623013828df8eca53f8837818d78e3d"
+  },
+  "message": "Subaccount successfully registered",
+  "status": 200
+}
+```
+
+These credentials should be stored securely in local storage for future authentication.
+
+## Implementation Example
+
+Here's a JavaScript implementation of the authentication process:
+
+```jsx
+const { ethers } = require('ethers');
+const crypto = require('crypto');
+const fetch = require('node-fetch');
+
+// API endpoints and contract addresses
+const INFRA_BASE_URL = 'https://mainnetapiserverwriter.logx.network';
+const INFRA_READER_URL = 'https://mainnetapiserver.logx.network';
+const ENDPOINT_CONTRACT_ADDRESS = '0xBC87C2397601391E66adeC581786dF3F8eeE6124';
+
+// Helper function to get subaccount ID
+function getSubAccountId(address) {
+  const subAccountIdString = `1_${address}_1`;
+  const subAccountIdHash = subaccountIdToHex(subAccountIdString);
+  return { subAccountIdString, subAccountIdHash };
+}
+
+// Convert subaccount ID to hex format
+function subaccountIdToHex(subaccountId) {
+  const bytes = subaccountIdToBytes32(subaccountId);
+  return '0x' + Buffer.from(bytes).toString('hex');
+}
+
+// Convert subaccount ID to bytes32 format
+function subaccountIdToBytes32(id) {
+  const parts = id.split('_');
+  const brokerId = parseInt(parts[0], 10);
+  const ethAddress = parts[1];
+  const subaccountNum = parseInt(parts[2], 10);
+
+  // Validate inputs
+  if (isNaN(brokerId) || brokerId >= Math.pow(2, 48)) {
+    throw new Error(`Invalid broker ID: ${brokerId}`);
+  }
+  if (isNaN(subaccountNum) || subaccountNum >= Math.pow(2, 48)) {
+    throw new Error(`Invalid subaccount number: ${subaccountNum}`);
+  }
+
+  // Convert to bytes
+  const first6Bytes = uintTo6Bytes(brokerId);
+  const next20Bytes = ethAddressTo20Bytes(ethAddress);
+  const last6Bytes = uintTo6Bytes(subaccountNum);
+
+  return [...first6Bytes, ...next20Bytes, ...last6Bytes];
+}
+
+// Convert unsigned integer to 6 bytes
+function uintTo6Bytes(num) {
+  if (num < 0 || num >= Math.pow(2, 48)) {
+    throw new Error(`number must be positive or less than 2^48: ${num}`);
+  }
+
+  const bytes = [0, 0, 0, 0, 0, 0];
+  for (let i = 0; i < 6; i++) {
+    bytes[5 - i] = num & 0xff;
+    num = num >> 8;
+  }
+  return bytes;
+}
+
+// Convert Ethereum address to 20 bytes
+function ethAddressTo20Bytes(address) {
+  let cleanAddress = address;
+  if (address.startsWith('0x')) {
+    cleanAddress = address.slice(2);
+  }
+
+  const bytes = Buffer.from(cleanAddress, 'hex');
+  if (bytes.length !== 20) {
+    throw new Error(
+      `invalid address length: expected 20 bytes, got ${bytes.length} bytes`
+    );
+  }
+
+  return Array.from(bytes);
+}
+
+// Get the current nonce from the API
+async function getNonce(address) {
+  const { subAccountIdHash } = getSubAccountId(address);
+  try {
+    const res = await fetch(
+      `${INFRA_READER_URL}/api/v1/subaccount/nonce/${subAccountIdHash}`,
+      {
+        headers: {
+          'Broker-Id': '1'
+        }
+      }
+    );
+    if (!res.ok) {
+      throw new Error('Failed to get nonce');
+    }
+
+    const data = await res.json();
+    return Number(data?.body?.nonce);
+  } catch (error) {
+    console.error('Error getting nonce:', error);
+    throw error;
+  }
+}
+
+// The definedTypes for EIP-712 signing
+const definedTypes = {
+  Register: [
+    { name: 'subAccountId', type: 'bytes32' },
+    { name: 'userAddress', type: 'address' },
+    { name: 'sessionKey', type: 'address' },
+    { name: 'expiryTimeStamp', type: 'uint128' },
+    { name: 'nonce', type: 'uint128' },
+    { name: 'chainId', type: 'uint256' }
+  ]
+};
+
+// Sign with ethers library
+async function signWithEthers(privateKey, domain, message, primaryType) {
+  const signer = new ethers.Wallet(privateKey);
+  const typeDefinition = {
+    [primaryType]: definedTypes[primaryType]
+  };
+  const signature = await signer.signTypedData(domain, typeDefinition, message);
+  return signature;
+}
+
+/**
+ * Main authentication function
+ *
+ * @param {string} userAddress - Ethereum address to authenticate
+ * @param {string} userPrivateKey - Private key corresponding to userAddress
+ * @param {number} chainId - Chain ID (e.g., 42161 for Arbitrum One)
+ * @returns {Promise<object>} Authentication result with credentials
+ */
+async function registerAccount(userAddress, userPrivateKey, chainId) {
+  try {
+    // STEP 1: Generate session data
+    console.log('Generating session data...');
+    const signer = ethers.Wallet.createRandom();
+    const publicKey = signer.address;
+    const privateKey = signer.privateKey;
+
+    // STEP 2: Register account
+    console.log('Preparing registration data...');
+    const { subAccountIdString, subAccountIdHash } = getSubAccountId(userAddress);
+    const nonce = await getNonce(userAddress);
+
+    // Prepare the message to sign
+    const message = {
+      subAccountId: subAccountIdHash,
+      userAddress: userAddress,
+      sessionKey: publicKey,
+      expiryTimeStamp: new Date().getTime() + 6 * 24 * 60 * 60 * 1000, // 6 days
+      nonce: nonce,
+      chainId: chainId
+    };
+
+    // Prepare the domain
+    const domain = {
+      name: 'LogX',
+      version: '1',
+      chainId: chainId,
+      verifyingContract: ENDPOINT_CONTRACT_ADDRESS
+    };
+
+    // Sign with user's Ethereum private key
+    console.log('Signing with user private key...');
+    const userSigner = new ethers.Wallet(userPrivateKey);
+    const ethSignature = await userSigner.signTypedData(
+      domain,
+      { Register: definedTypes.Register },
+      message
+    );
+
+    // Sign with session key
+    console.log('Signing with session key...');
+    const signingSignature = await signWithEthers(
+      privateKey,
+      domain,
+      message,
+      'Register'
+    );
+
+    // STEP 3: Send authentication request
+    console.log('Sending authentication request...');
+    const res = await fetch(`${INFRA_BASE_URL}/api/v1/auth`, {
+      method: 'POST',
+      body: JSON.stringify({
+        subaccountId: subAccountIdString,
+        signingKey: publicKey,
+        signingSignature: signingSignature,
+        ethAddress: userAddress,
+        ethSignature: ethSignature,
+        expiryTs: message.expiryTimeStamp,
+        nonce: message.nonce,
+        chainId
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'broker-id': '1'
+      }
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(`Authentication failed: ${errorData.message || res.statusText}`);
+    }
+
+    // Process the response
+    const responseData = await res.json();
+    const account = {
+      ...responseData.body, // Contains logx_key and logx_secret
+      sessionKey: privateKey,
+      publicKey: publicKey,
+      expiryTs: message.expiryTimeStamp - 0.5 * 24 * 60 * 60 * 1000 // Expires half a day earlier
+    };
+
+    console.log("Authentication successful!");
+    return account;
+  } catch (error) {
+    console.error("Authentication error:", error);
+    throw error;
+  }
+}
+```
+
+## Handling Credential Expiry
+
+Since authentication credentials expire after 6 days, implement a check to verify if credentials are still valid:
+
+```jsx
+/**
+ * Check if credentials need refresh
+ *
+ * @param {object} credentials - Object containing expiryTs
+ * @returns {boolean} True if refresh needed
+ */
+function needsRefresh(credentials) {
+  if (!credentials || !credentials.expiryTs) return true;
+
+  // Refresh when less than 1 day remains
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  return Date.now() + oneDayMs > credentials.expiryTs;
+}
+```
+
+## Signing with EIP-712
+
+The signing process uses EIP-712, a standard for typed structured data hashing and signing. It ensures that the signatures are both human-readable and secure, allowing for easier verification on the blockchain.
+
+### Benefits of EIP-712
+- Ensures signatures are typechecked and structured
+- Prevents signature replay attacks
+- Provides better security than raw message signing
+
+### Message Types
+LogX Network supports various message types for different operations:
+
+```jsx
+// Message types for EIP-712
+const messageTypes = {
+  EIP712Domain: [
+    { name: 'name', type: 'string' },
+    { name: 'version', type: 'string' },
+    { name: 'chainId', type: 'uint256' },
+    { name: 'verifyingContract', type: 'address' },
+  ],
+  Register: [
+    { name: 'subAccountId', type: 'bytes32' },
+    { name: 'userAddress', type: 'address' },
+    { name: 'sessionKey', type: 'address' },
+    { name: 'expiryTimeStamp', type: 'uint128' },
+    { name: 'nonce', type: 'uint128' },
+    { name: 'chainId', type: 'uint256' },
+  ],
+  // Additional message types for other operations...
+}
+```
+
+## Important Notes
+
+- Authentication credentials expire after 6 days
+- Store credentials securely and refresh before expiration
+- Never share your `privateKey` or `logx_secret` with unauthorized parties
+- The session key is different from your main Ethereum wallet's private key
+- Always implement proper error handling for authentication failures
